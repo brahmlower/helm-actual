@@ -1,6 +1,6 @@
 apiVersion: v2
 name: actual
-description: Helm chart for managing Actual
+description: Helm chart for managing [Actual](https://www.actualbudget.com/)
 
 # A chart can be either an 'application' or a 'library' chart.
 #
