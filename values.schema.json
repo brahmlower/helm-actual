@@ -89,7 +89,7 @@
               "default": true
             }
           },
-          "additionalProperties": false,
+          "additionalProperties": true,
           "title": "annotations"
         },
         "className": {
@@ -110,7 +110,7 @@
           ]
         }
       },
-      "additionalProperties": false,
+      "additionalProperties": true,
       "title": "ingress"
     },
     "livenessProbe": {

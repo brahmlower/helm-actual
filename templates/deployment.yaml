@@ -1,5 +1,5 @@
 apiVersion: apps/v1
-kind: StatefulSet
+kind: Deployment
 metadata:
   name: {{ include "..fullname" . }}
   labels:
@@ -11,16 +11,6 @@ spec:
   selector:
     matchLabels:
       {{- include "..selectorLabels" . | nindent 6 }}
-  volumeClaimTemplates:
-    - metadata:
-        name: actual-data-pvc
-      spec:
-        storageClassName: microk8s-hostpath-immediate
-        accessModes:
-          - ReadWriteOnce
-        resources:
-          requests:
-            storage: 3Gi
   template:
     metadata:
       {{- with .Values.podAnnotations }}
@@ -47,7 +37,8 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
-            - containerPort: 5006
+            - name: http
+              containerPort: 5006
               protocol: TCP
           env:
             {{- toYaml .Values.env | nindent 12 }}
@@ -58,8 +49,12 @@ spec:
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           volumeMounts:
-            - name: actual-data-pvc
+            - name: actual-data
               mountPath: "/data"
+      volumes:
+        - name: actual-data
+          persistentVolumeClaim:
+            claimName: {{ .Values.persistence.data.persistentVolumeClaim }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
